@@ -1,0 +1,38 @@
+while True:
+    # Stores the users two matrices
+    matrix1 = []
+    matrix2 = []
+
+    # Asks the user to enter matrices, leave blank to finish matrix
+    userInput = input("Enter row for matrix 1: ")
+    while(userInput != ""):
+        matrix1.append(list(int(x) for x in userInput.split(" ")))
+        userInput = input("Enter row for matrix 1: ")
+
+    userInput = input("Enter row for matrix 2: ")
+    while(userInput != ""):
+        matrix2.append(list(int(x) for x in userInput.split(" ")))
+        userInput = input("Enter row for matrix 2: ")
+
+    # Some logic to check if the problem is valid
+    valid = len(matrix2) != 0
+    valid = len(matrix1[0]) == len(matrix2)
+    
+    if(valid):
+        # Multiplies matrix and stores them in result list
+        result = []
+        for y in range(len(matrix1)):
+            result.append([])
+            for x in range(len(matrix2[0])):
+                current = 0
+                for j in range(len(matrix1[0])):
+                    current += matrix1[y][j] * matrix2[j][x]
+                result[-1].append(current)
+
+        # Outputs the result 
+        for i in result:
+            print(i)
+    else:
+        # Outputs an error message
+        print("Invalid")
+        
