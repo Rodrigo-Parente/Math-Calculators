@@ -1,0 +1,92 @@
+import math
+from decimal import Decimal, getcontext
+getcontext().prec = 100
+p = 10
+
+def CheckIfEqual(nums):
+    for i in range(len(nums) - 1):
+        if(math.isclose(nums[i], nums[i+1], rel_tol=1e-20) == False):
+            return False
+    return True
+
+def Factorial(n):
+    result = 1
+    for i in range(n):
+        result *= i + 1
+
+    return result
+
+def ConvertToSuperScript(n):
+    if(n == 0):
+        return ""
+    if(n == 1):
+        return "n"
+    
+    result = ""
+    superScripts = {
+        0: "⁰",
+        1: "¹",
+        2: "²",
+        3: "³",
+        4: "⁴",
+        5: "⁵",
+        6: "⁶",
+        7: "⁷",
+        8: "⁸",
+        9: "⁹"
+    }
+    while(n > 0):
+        result = superScripts.get(n%10, "")+ result
+        n -= n % 10
+        n /= 10
+        
+    return "n" + result
+        
+        
+
+def ConvertResults(mult, pows):
+    result = ""
+    for i in range(len(mult)):
+        if(mult[i] %1 != 0):
+            result += f"{mult[i]:.{p}f}".rstrip('0').rstrip('.') + ConvertToSuperScript(pows[i])
+        else:
+            if(mult[i] != 1):
+                result += str(mult[i])
+            result += ConvertToSuperScript(pows[i])
+            
+        if(i != len(mult) - 1):
+            if(mult[i + 1] >= 0):
+                result += " + "
+            else:
+                result += " - "
+                mult[i+1] *= Decimal(-1)
+            
+    return result
+
+
+mult = []
+pows = []
+
+nums = list(map(Decimal, input("Enter Sequence: ").split()))
+
+while(CheckIfEqual(nums) != True):
+    dif = nums
+    depth = 0
+    while(CheckIfEqual(dif) != True):
+        depth += 1
+        cur = []
+        for i in range(len(dif) - 1):
+            cur.append(Decimal(dif[i+1]) - Decimal(dif[i]))
+        dif = cur
+    mult.append(Decimal(dif[0]) / Decimal(Factorial(depth)))
+    pows.append(depth)
+
+    for i in range(len(nums)):
+        nums[i] -= Decimal(mult[-1]) * Decimal(((i + 1) ** pows[-1]))
+
+if(nums[0] != 0):
+    mult.append(Decimal(nums[0]))
+    pows.append(0)
+
+print(ConvertResults(mult, pows))
+
